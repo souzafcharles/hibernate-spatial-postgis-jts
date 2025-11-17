@@ -1,6 +1,7 @@
 package com.github.souzafcharles.api.controller;
 
-import com.github.souzafcharles.api.model.dto.SpatialDataRequestDTO;
+import com.github.souzafcharles.api.model.dto.SpatialDataSerializerRequestDTO;
+import com.github.souzafcharles.api.model.dto.SpatialDataDeserializerRequestDTO;
 import com.github.souzafcharles.api.model.dto.SpatialDataResponseDTO;
 import com.github.souzafcharles.api.model.dto.GeoJsonResponseDTO;
 import com.github.souzafcharles.api.service.SpatialDataService;
@@ -18,10 +19,16 @@ public class SpatialDataController {
     public SpatialDataController(SpatialDataService spatialDataService) {
         this.spatialDataService = spatialDataService;
     }
-    
-    @PostMapping
-    public ResponseEntity<SpatialDataResponseDTO> create(@RequestBody SpatialDataRequestDTO request) {
-        SpatialDataResponseDTO response = spatialDataService.createSpatialData(request);
+
+    @PostMapping("/serializer")
+    public ResponseEntity<SpatialDataResponseDTO> createFromSerializer(@RequestBody SpatialDataSerializerRequestDTO request) {
+        SpatialDataResponseDTO response = spatialDataService.createFromSerializerFormat(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/deserializer")
+    public ResponseEntity<SpatialDataResponseDTO> createFromDeserializer(@RequestBody SpatialDataDeserializerRequestDTO request) {
+        SpatialDataResponseDTO response = spatialDataService.createFromDeserializerFormat(request);
         return ResponseEntity.ok(response);
     }
 
@@ -40,12 +47,6 @@ public class SpatialDataController {
     @GetMapping("/{id}/geojson")
     public ResponseEntity<GeoJsonResponseDTO> getAsGeoJson(@PathVariable Long id) {
         GeoJsonResponseDTO response = spatialDataService.getPolygonAsGeoJson(id);
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/geojson")
-    public ResponseEntity<SpatialDataResponseDTO> createFromGeoJson(@RequestBody String geoJson) {
-        SpatialDataResponseDTO response = spatialDataService.createFromGeoJson(geoJson);
         return ResponseEntity.ok(response);
     }
 }
