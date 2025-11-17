@@ -1,4 +1,4 @@
-package com.github.souzafcharles.spatial_postgis_demo.config;
+package com.github.souzafcharles.api.config;
 
 import io.github.cdimascio.dotenv.Dotenv;
 

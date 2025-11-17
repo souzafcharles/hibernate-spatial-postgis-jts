@@ -1,4 +1,4 @@
-package com.github.souzafcharles.spatial_postgis_demo.model.entity;
+package com.github.souzafcharles.api.model.entity;
 
 import jakarta.persistence.*;
 import org.locationtech.jts.geom.*;
