@@ -18,7 +18,7 @@ public class SpatialDataController {
     public SpatialDataController(SpatialDataService spatialDataService) {
         this.spatialDataService = spatialDataService;
     }
-
+    
     @PostMapping
     public ResponseEntity<SpatialDataResponseDTO> create(@RequestBody SpatialDataRequestDTO request) {
         SpatialDataResponseDTO response = spatialDataService.createSpatialData(request);
@@ -40,6 +40,12 @@ public class SpatialDataController {
     @GetMapping("/{id}/geojson")
     public ResponseEntity<GeoJsonResponseDTO> getAsGeoJson(@PathVariable Long id) {
         GeoJsonResponseDTO response = spatialDataService.getPolygonAsGeoJson(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/geojson")
+    public ResponseEntity<SpatialDataResponseDTO> createFromGeoJson(@RequestBody String geoJson) {
+        SpatialDataResponseDTO response = spatialDataService.createFromGeoJson(geoJson);
         return ResponseEntity.ok(response);
     }
 }
