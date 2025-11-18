@@ -5,6 +5,7 @@ import com.github.souzafcharles.api.model.dto.SpatialDataDeserializerRequestDTO;
 import com.github.souzafcharles.api.model.dto.SpatialDataResponseDTO;
 import com.github.souzafcharles.api.model.dto.GeoJsonResponseDTO;
 import com.github.souzafcharles.api.service.SpatialDataService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,13 +22,13 @@ public class SpatialDataController {
     }
 
     @PostMapping("/serializer")
-    public ResponseEntity<SpatialDataResponseDTO> createFromSerializer(@RequestBody SpatialDataSerializerRequestDTO request) {
+    public ResponseEntity<SpatialDataResponseDTO> createFromSerializer( @Valid @RequestBody SpatialDataSerializerRequestDTO request) {
         SpatialDataResponseDTO response = spatialDataService.createFromSerializerFormat(request);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/deserializer")
-    public ResponseEntity<SpatialDataResponseDTO> createFromDeserializer(@RequestBody SpatialDataDeserializerRequestDTO request) {
+    public ResponseEntity<SpatialDataResponseDTO> createFromDeserializer(@Valid @RequestBody SpatialDataDeserializerRequestDTO request) {
         SpatialDataResponseDTO response = spatialDataService.createFromDeserializerFormat(request);
         return ResponseEntity.ok(response);
     }

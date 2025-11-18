@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.github.souzafcharles.api.utils.Messages;
 import org.locationtech.jts.geom.*;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ public class GeometryDeserializer extends JsonDeserializer<Geometry> {
             case "Point" -> deserializePoint(coordinatesNode);
             case "Polygon" -> deserializePolygon(coordinatesNode);
             case "LineString" -> deserializeLineString(coordinatesNode);
-            default -> throw new IllegalArgumentException("Unsupported geometry type: " + geometryType);
+            default -> throw new IllegalArgumentException(String.format(Messages.UNSUPPORTED_GEOMETRY_TYPE, geometryType));
         };
     }
 
@@ -47,7 +48,7 @@ public class GeometryDeserializer extends JsonDeserializer<Geometry> {
         JsonNode exteriorRingNode = coordinatesNode.get(0);
         Coordinate[] exteriorCoordinates = parseCoordinateArray(exteriorRingNode);
         if (exteriorCoordinates.length < 4) {
-            throw new IllegalArgumentException("Polygon must contain at least 4 coordinates (closed ring)");
+            throw new IllegalArgumentException(Messages.INVALID_POLYGON_COORDINATES);
         }
         LinearRing shell = geometryFactory.createLinearRing(exteriorCoordinates);
         return geometryFactory.createPolygon(shell);

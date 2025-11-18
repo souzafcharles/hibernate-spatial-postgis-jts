@@ -6,6 +6,8 @@ import com.github.souzafcharles.api.model.dto.SpatialDataResponseDTO;
 import com.github.souzafcharles.api.model.dto.GeoJsonResponseDTO;
 import com.github.souzafcharles.api.model.entity.SpatialData;
 import com.github.souzafcharles.api.repository.SpatialDataRepository;
+import com.github.souzafcharles.api.utils.Messages;
+import jakarta.persistence.EntityNotFoundException;
 import org.locationtech.jts.geom.*;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +30,6 @@ public class SpatialDataService {
     // ------------------------------------------------------------
     public SpatialDataResponseDTO createFromSerializerFormat(SpatialDataSerializerRequestDTO request) {
         SpatialData spatialData = new SpatialData();
-
         if (hasValidPointCoordinates(request.point())) {
             spatialData.setPoint(createPoint(request.point()));
         }
@@ -47,7 +48,6 @@ public class SpatialDataService {
     // ------------------------------------------------------------
     public SpatialDataResponseDTO createFromDeserializerFormat(SpatialDataDeserializerRequestDTO request) {
         SpatialData spatialData = new SpatialData();
-
         if (request.point() != null) {
             spatialData.setPoint((Point) request.point());
         }
@@ -77,7 +77,7 @@ public class SpatialDataService {
     // READ – Find by ID
     // ------------------------------------------------------------
     public SpatialDataResponseDTO getById(Long spatialDataId) {
-        SpatialData spatialData = spatialDataRepository.findById(spatialDataId).orElseThrow(() -> new RuntimeException("Spatial data not found with id: " + spatialDataId));
+        SpatialData spatialData = spatialDataRepository.findById(spatialDataId).orElseThrow(() -> new EntityNotFoundException(String.format(Messages.SPATIAL_DATA_NOT_FOUND, spatialDataId)));
         return toResponse(spatialData);
     }
 
@@ -85,15 +85,13 @@ public class SpatialDataService {
     // READ – GeoJSON (Polygon only)
     // ------------------------------------------------------------
     public GeoJsonResponseDTO getPolygonAsGeoJson(Long spatialDataId) {
-        SpatialData spatialData = spatialDataRepository.findById(spatialDataId).orElseThrow(() -> new RuntimeException("Spatial data not found with id: " + spatialDataId));
+        SpatialData spatialData = spatialDataRepository.findById(spatialDataId).orElseThrow(() -> new EntityNotFoundException(String.format(Messages.SPATIAL_DATA_NOT_FOUND, spatialDataId)));
         if (spatialData.getPolygon() == null) {
-            throw new RuntimeException("Spatial data with id " + spatialDataId + " does not contain a polygon");
+            throw new IllegalArgumentException(
+                    String.format(Messages.NO_POLYGON_FOUND, spatialDataId)
+            );
         }
-        return new GeoJsonResponseDTO(
-                "Feature",
-                convertToGeoJsonGeometry(spatialData.getPolygon()),
-                new GeoJsonProperties("Polygon from database", spatialDataId)
-        );
+        return new GeoJsonResponseDTO("Feature", convertToGeoJsonGeometry(spatialData.getPolygon()), new GeoJsonProperties("Polygon from database", spatialDataId));
     }
 
     // ------------------------------------------------------------
@@ -120,7 +118,7 @@ public class SpatialDataService {
     private Polygon createPolygon(List<List<List<Double>>> polygonCoordinates) {
         List<List<Double>> exteriorRing = polygonCoordinates.get(0);
         if (exteriorRing.size() < 4) {
-            throw new IllegalArgumentException("Polygon must contain at least 4 points");
+            throw new IllegalArgumentException(Messages.INVALID_POLYGON_COORDINATES);
         }
         Coordinate[] shellCoordinates = new Coordinate[exteriorRing.size()];
         for (int i = 0; i < exteriorRing.size(); i++) {
@@ -136,10 +134,7 @@ public class SpatialDataService {
     private LineString createLineString(List<List<Double>> lineCoordinates) {
         Coordinate[] coordinates = new Coordinate[lineCoordinates.size()];
         for (int i = 0; i < lineCoordinates.size(); i++) {
-            coordinates[i] = new Coordinate(
-                    lineCoordinates.get(i).get(0),
-                    lineCoordinates.get(i).get(1)
-            );
+            coordinates[i] = new Coordinate(lineCoordinates.get(i).get(0), lineCoordinates.get(i).get(1));
         }
         return geometryFactory.createLineString(coordinates);
     }
@@ -163,14 +158,13 @@ public class SpatialDataService {
     private Object createGeoJsonPolygon(Polygon polygon) {
         Coordinate[] coordinates = polygon.getExteriorRing().getCoordinates();
         double[][][] polygonCoordinates = new double[1][coordinates.length][2];
-
         for (int i = 0; i < coordinates.length; i++) {
             polygonCoordinates[0][i][0] = coordinates[i].x;
             polygonCoordinates[0][i][1] = coordinates[i].y;
         }
-
         return new GeoJsonGeometry("Polygon", polygonCoordinates);
     }
+
     private Object createGeoJsonPoint(Point point) {
         return new GeoJsonGeometry("Point", new double[]{point.getX(), point.getY()});
     }
