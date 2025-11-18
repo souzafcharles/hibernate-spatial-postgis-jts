@@ -370,4 +370,686 @@ class SpatialDataServiceTest {
         assertEquals(1L, result.id());
         verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
     }
+
+    // ------------------------------------------------------------
+    // CREATE – From Serializer Format - Additional Tests
+    // ------------------------------------------------------------
+    @Test
+    void createFromSerializerFormat_WithOnlyPoint_ShouldCreateOnlyPoint() {
+        // Arrange
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                pointCoordinates, null, null, null, null, null
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromSerializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    @Test
+    void createFromSerializerFormat_WithOnlyLineString_ShouldCreateOnlyLineString() {
+        // Arrange
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                null, null, lineStringCoordinates, null, null, null
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromSerializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    @Test
+    void createFromSerializerFormat_WithOnlyMultiPoint_ShouldCreateOnlyMultiPoint() {
+        // Arrange
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                null, multiPointCoordinates, null, null, null, null
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromSerializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    @Test
+    void createFromSerializerFormat_WithOnlyMultiLineString_ShouldCreateOnlyMultiLineString() {
+        // Arrange
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                null, null, null, multiLineStringCoordinates, null, null
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromSerializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    @Test
+    void createFromSerializerFormat_WithOnlyPolygon_ShouldCreateOnlyPolygon() {
+        // Arrange
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                null, null, null, null, polygonCoordinates, null
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromSerializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    @Test
+    void createFromSerializerFormat_WithOnlyMultiPolygon_ShouldCreateOnlyMultiPolygon() {
+        // Arrange
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                null, null, null, null, null, multiPolygonCoordinates
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromSerializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    // ------------------------------------------------------------
+    // CREATE – From Deserializer Format - Additional Tests
+    // ------------------------------------------------------------
+    @Test
+    void createFromDeserializerFormat_WithAllGeometryTypes_ShouldSaveAll() {
+        // Arrange
+        GeometryFactory geometryFactory = new GeometryFactory();
+
+        Point point = geometryFactory.createPoint(new Coordinate(1.0, 2.0));
+        MultiPoint multiPoint = geometryFactory.createMultiPointFromCoords(
+                new Coordinate[]{new Coordinate(1, 2), new Coordinate(3, 4)}
+        );
+        LineString lineString = geometryFactory.createLineString(
+                new Coordinate[]{new Coordinate(0, 0), new Coordinate(1, 1)}
+        );
+        MultiLineString multiLineString = geometryFactory.createMultiLineString(new LineString[]{
+                geometryFactory.createLineString(new Coordinate[]{new Coordinate(0,0), new Coordinate(1,1)})
+        });
+        Polygon polygon = geometryFactory.createPolygon(new Coordinate[]{
+                new Coordinate(0,0), new Coordinate(0,1), new Coordinate(1,1), new Coordinate(1,0), new Coordinate(0,0)
+        });
+        MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(new Polygon[]{
+                geometryFactory.createPolygon(new Coordinate[]{
+                        new Coordinate(0,0), new Coordinate(0,1), new Coordinate(1,1), new Coordinate(1,0), new Coordinate(0,0)
+                })
+        });
+
+        SpatialDataDeserializerRequestDTO request = new SpatialDataDeserializerRequestDTO(
+                point, multiPoint, lineString, multiLineString, polygon, multiPolygon
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromDeserializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    @Test
+    void createFromDeserializerFormat_WithOnlyMultiPoint_ShouldCreateOnlyMultiPoint() {
+        // Arrange
+        GeometryFactory geometryFactory = new GeometryFactory();
+        MultiPoint multiPoint = geometryFactory.createMultiPointFromCoords(
+                new Coordinate[]{new Coordinate(1, 2), new Coordinate(3, 4)}
+        );
+
+        SpatialDataDeserializerRequestDTO request = new SpatialDataDeserializerRequestDTO(
+                null, multiPoint, null, null, null, null
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromDeserializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    @Test
+    void createFromDeserializerFormat_WithOnlyLineString_ShouldCreateOnlyLineString() {
+        // Arrange
+        GeometryFactory geometryFactory = new GeometryFactory();
+        LineString lineString = geometryFactory.createLineString(
+                new Coordinate[]{new Coordinate(0, 0), new Coordinate(1, 1)}
+        );
+
+        SpatialDataDeserializerRequestDTO request = new SpatialDataDeserializerRequestDTO(
+                null, null, lineString, null, null, null
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromDeserializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    @Test
+    void createFromDeserializerFormat_WithOnlyMultiLineString_ShouldCreateOnlyMultiLineString() {
+        // Arrange
+        GeometryFactory geometryFactory = new GeometryFactory();
+        MultiLineString multiLineString = geometryFactory.createMultiLineString(new LineString[]{
+                geometryFactory.createLineString(new Coordinate[]{new Coordinate(0,0), new Coordinate(1,1)})
+        });
+
+        SpatialDataDeserializerRequestDTO request = new SpatialDataDeserializerRequestDTO(
+                null, null, null, multiLineString, null, null
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromDeserializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    @Test
+    void createFromDeserializerFormat_WithOnlyPolygon_ShouldCreateOnlyPolygon() {
+        // Arrange
+        GeometryFactory geometryFactory = new GeometryFactory();
+        Polygon polygon = geometryFactory.createPolygon(new Coordinate[]{
+                new Coordinate(0,0), new Coordinate(0,1), new Coordinate(1,1), new Coordinate(1,0), new Coordinate(0,0)
+        });
+
+        SpatialDataDeserializerRequestDTO request = new SpatialDataDeserializerRequestDTO(
+                null, null, null, null, polygon, null
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromDeserializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    @Test
+    void createFromDeserializerFormat_WithOnlyMultiPolygon_ShouldCreateOnlyMultiPolygon() {
+        // Arrange
+        GeometryFactory geometryFactory = new GeometryFactory();
+        MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(new Polygon[]{
+                geometryFactory.createPolygon(new Coordinate[]{
+                        new Coordinate(0,0), new Coordinate(0,1), new Coordinate(1,1), new Coordinate(1,0), new Coordinate(0,0)
+                })
+        });
+
+        SpatialDataDeserializerRequestDTO request = new SpatialDataDeserializerRequestDTO(
+                null, null, null, null, null, multiPolygon
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromDeserializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    // ------------------------------------------------------------
+    // READ – GeoJSON - Additional Tests for Different Geometry Types
+    // ------------------------------------------------------------
+    @Test
+    void getPolygonAsGeoJson_WhenCalled_ShouldConvertPolygonToGeoJson() {
+        // Arrange
+        Long spatialDataId = 1L;
+        SpatialData spatialData = new SpatialData();
+        spatialData.setId(spatialDataId);
+
+        GeometryFactory geometryFactory = new GeometryFactory();
+        Coordinate[] coordinates = {
+                new Coordinate(0.0, 0.0),
+                new Coordinate(0.0, 10.0),
+                new Coordinate(10.0, 10.0),
+                new Coordinate(10.0, 0.0),
+                new Coordinate(0.0, 0.0)
+        };
+        Polygon polygon = geometryFactory.createPolygon(coordinates);
+        spatialData.setPolygon(polygon);
+
+        when(spatialDataRepository.findById(spatialDataId)).thenReturn(Optional.of(spatialData));
+
+        // Act
+        GeoJsonResponseDTO result = spatialDataService.getPolygonAsGeoJson(spatialDataId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("Feature", result.type());
+        assertNotNull(result.geometry());
+        assertNotNull(result.properties());
+        verify(spatialDataRepository, times(1)).findById(spatialDataId);
+    }
+
+    // ------------------------------------------------------------
+    // Edge Cases - Geometry Creation Validation
+    // ------------------------------------------------------------
+    @Test
+    void createFromSerializerFormat_WithInvalidPointCoordinates_ShouldNotCreatePoint() {
+        // Arrange
+        List<Double> invalidPoint = Arrays.asList(1.0); // Only one coordinate
+
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                invalidPoint, null, null, null, null, null
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromSerializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    @Test
+    void createFromSerializerFormat_WithEmptyMultiPoint_ShouldNotCreateMultiPoint() {
+        // Arrange
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                null, Arrays.asList(), null, null, null, null
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromSerializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    @Test
+    void createFromSerializerFormat_WithEmptyLineString_ShouldNotCreateLineString() {
+        // Arrange
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                null, null, Arrays.asList(), null, null, null
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromSerializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    @Test
+    void createFromSerializerFormat_WithEmptyMultiLineString_ShouldNotCreateMultiLineString() {
+        // Arrange
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                null, null, null, Arrays.asList(), null, null
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromSerializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    @Test
+    void createFromSerializerFormat_WithEmptyMultiPolygon_ShouldNotCreateMultiPolygon() {
+        // Arrange
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                null, null, null, null, null, Arrays.asList()
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromSerializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    // ------------------------------------------------------------
+    // Service Initialization and Constructor Tests
+    // ------------------------------------------------------------
+    @Test
+    void spatialDataService_WhenInitialized_ShouldNotBeNull() {
+        // Arrange & Act & Assert
+        assertNotNull(spatialDataService);
+    }
+
+    @Test
+    void spatialDataService_ShouldHaveRepositoryInjected() {
+        // Arrange & Act & Assert
+        assertNotNull(spatialDataService);
+    }
+
+    // ------------------------------------------------------------
+    // Error Scenarios - Additional Exception Tests
+    // ------------------------------------------------------------
+    @Test
+    void createFromSerializerFormat_WithNullRequest_ShouldThrowException() {
+        // Arrange
+        SpatialDataSerializerRequestDTO request = null;
+
+        // Act & Assert
+        assertThrows(NullPointerException.class,
+                () -> spatialDataService.createFromSerializerFormat(request));
+    }
+
+    // ------------------------------------------------------------
+    // Data Conversion Tests (Testing private methods indirectly)
+    // ------------------------------------------------------------
+    @Test
+    void createFromSerializerFormat_WithValidMultiPolygon_ShouldCreateMultiPolygon() {
+        // Arrange
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                null, null, null, null, null, multiPolygonCoordinates
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromSerializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    @Test
+    void createFromSerializerFormat_WithValidMultiLineString_ShouldCreateMultiLineString() {
+        // Arrange
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                null, null, null, multiLineStringCoordinates, null, null
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromSerializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    // ------------------------------------------------------------
+    // Response Mapping Tests
+    // ------------------------------------------------------------
+    @Test
+    void toResponse_ShouldMapAllFieldsCorrectly() {
+        // Arrange
+        SpatialData entity = new SpatialData();
+        entity.setId(1L);
+
+        GeometryFactory geometryFactory = new GeometryFactory();
+        Point point = geometryFactory.createPoint(new Coordinate(1.0, 2.0));
+        entity.setPoint(point);
+
+        // Set up the repository mock BEFORE calling the service method
+        when(spatialDataRepository.findById(1L)).thenReturn(Optional.of(entity));
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.getById(1L);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        assertNotNull(result.point());
+        assertEquals(point, result.point());
+        verify(spatialDataRepository, times(1)).findById(1L);
+    }
+
+    // ------------------------------------------------------------
+    // Boundary Value Tests
+    // ------------------------------------------------------------
+    @Test
+    void createFromSerializerFormat_WithMinimumValidPolygon_ShouldCreatePolygon() {
+        // Arrange - Polygon with exactly 4 points (minimum for closed polygon)
+        List<List<List<Double>>> minPolygonCoordinates = Arrays.asList(
+                Arrays.asList(
+                        Arrays.asList(0.0, 0.0),
+                        Arrays.asList(0.0, 1.0),
+                        Arrays.asList(1.0, 1.0),
+                        Arrays.asList(0.0, 0.0) // Closing point
+                )
+        );
+
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                null, null, null, null, minPolygonCoordinates, null
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromSerializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    // ------------------------------------------------------------
+    // Additional Edge Cases
+    // ------------------------------------------------------------
+    @Test
+    void createFromSerializerFormat_WithValidMultiPointWithSinglePoint_ShouldCreateMultiPoint() {
+        // Arrange
+        List<List<Double>> singlePointMultiPoint = Arrays.asList(
+                Arrays.asList(1.0, 2.0)
+        );
+
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                null, singlePointMultiPoint, null, null, null, null
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromSerializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    @Test
+    void createFromSerializerFormat_WithValidLineStringWithTwoPoints_ShouldCreateLineString() {
+        // Arrange
+        List<List<Double>> twoPointLineString = Arrays.asList(
+                Arrays.asList(1.0, 2.0),
+                Arrays.asList(3.0, 4.0)
+        );
+
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                null, null, twoPointLineString, null, null, null
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromSerializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    // Test for GeometryFactory initialization
+    @Test
+    void spatialDataService_WhenConstructed_ShouldInitializeGeometryFactory() {
+        // Arrange & Act
+        SpatialDataService service = new SpatialDataService(spatialDataRepository);
+
+        // Assert
+        assertNotNull(service);
+    }
+
+    // Test for GeoJson conversion with complex polygon
+    @Test
+    void getPolygonAsGeoJson_WithComplexPolygon_ShouldConvertCorrectly() {
+        // Arrange
+        Long spatialDataId = 1L;
+        SpatialData spatialData = new SpatialData();
+        spatialData.setId(spatialDataId);
+
+        GeometryFactory geometryFactory = new GeometryFactory();
+        // Create a more complex polygon
+        Coordinate[] exteriorRing = {
+                new Coordinate(0.0, 0.0),
+                new Coordinate(0.0, 10.0),
+                new Coordinate(10.0, 10.0),
+                new Coordinate(10.0, 0.0),
+                new Coordinate(0.0, 0.0)
+        };
+
+        Polygon polygon = geometryFactory.createPolygon(exteriorRing);
+        spatialData.setPolygon(polygon);
+
+        when(spatialDataRepository.findById(spatialDataId)).thenReturn(Optional.of(spatialData));
+
+        // Act
+        GeoJsonResponseDTO result = spatialDataService.getPolygonAsGeoJson(spatialDataId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("Feature", result.type());
+        assertNotNull(result.geometry());
+        assertNotNull(result.properties());
+        verify(spatialDataRepository, times(1)).findById(spatialDataId);
+    }
+
 }
