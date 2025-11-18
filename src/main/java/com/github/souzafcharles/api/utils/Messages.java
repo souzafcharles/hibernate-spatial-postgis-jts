@@ -26,6 +26,11 @@ public class Messages {
     public static final String INVALID_PARAMETER_TYPE = "Invalid parameter type for '%s'. Expected: %s";
     public static final String MISSING_REQUIRED_PARAMETER = "Required parameter '%s' is missing";
 
+    // GeoJSON and Service messages
+    public static final String GEOJSON_FEATURE_TYPE = "Feature";
+    public static final String GEOJSON_PROPERTIES_DESCRIPTION = "Polygon from database";
+    public static final String GEOJSON_PROPERTIES_KEY = "properties";
+
     // OpenAPI General
     public static final String OPENAPI_TITLE = "Spring Boot Spatial PostGIS API";
     public static final String OPENAPI_DESCRIPTION = "API for handling spatial data with PostgreSQL and PostGIS";

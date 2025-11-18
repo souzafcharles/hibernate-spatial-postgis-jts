@@ -9,6 +9,5 @@ public record SpatialDataResponseDTO(
         Geometry lineString,
         Geometry multiLineString,
         Geometry polygon,
-        Geometry multiPolygon,
-        Geometry geometryCollection
+        Geometry multiPolygon
 ) {}

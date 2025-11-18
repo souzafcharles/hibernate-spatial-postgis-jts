@@ -32,9 +32,6 @@ public class SpatialData implements Serializable {
     @Column(name = "multipolygon", columnDefinition = "geometry(MultiPolygon, 4326)")
     private MultiPolygon multiPolygon;
 
-    @Column(name = "geometrycollection", columnDefinition = "geometry(GeometryCollection, 4326)")
-    private GeometryCollection geometryCollection;
-
     public SpatialData() {
     }
 
@@ -92,13 +89,5 @@ public class SpatialData implements Serializable {
 
     public void setMultiPolygon(MultiPolygon multiPolygon) {
         this.multiPolygon = multiPolygon;
-    }
-
-    public GeometryCollection getGeometryCollection() {
-        return geometryCollection;
-    }
-
-    public void setGeometryCollection(GeometryCollection geometryCollection) {
-        this.geometryCollection = geometryCollection;
     }
 }

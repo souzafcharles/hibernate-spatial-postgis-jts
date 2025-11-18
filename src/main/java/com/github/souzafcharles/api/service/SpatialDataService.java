@@ -112,11 +112,11 @@ public class SpatialDataService {
     public GeoJsonResponseDTO getPolygonAsGeoJson(Long spatialDataId) {
         SpatialData spatialData = spatialDataRepository.findById(spatialDataId).orElseThrow(() -> new EntityNotFoundException(String.format(Messages.SPATIAL_DATA_NOT_FOUND, spatialDataId)));
         if (spatialData.getPolygon() == null) {
-            throw new IllegalArgumentException(
-                    String.format(Messages.NO_POLYGON_FOUND, spatialDataId)
+            throw new IllegalArgumentException(String.format(Messages.NO_POLYGON_FOUND, spatialDataId)
             );
         }
-        return new GeoJsonResponseDTO("Feature", convertToGeoJsonGeometry(spatialData.getPolygon()), new GeoJsonProperties("Polygon from database", spatialDataId));
+        return new GeoJsonResponseDTO(Messages.GEOJSON_FEATURE_TYPE, convertToGeoJsonGeometry(spatialData.getPolygon()), new GeoJsonProperties(Messages.GEOJSON_PROPERTIES_DESCRIPTION, spatialDataId)
+        );
     }
 
     // ------------------------------------------------------------
@@ -296,8 +296,7 @@ public class SpatialDataService {
                 entity.getLineString(),
                 entity.getMultiLineString(),
                 entity.getPolygon(),
-                entity.getMultiPolygon(),
-                entity.getGeometryCollection()
+                entity.getMultiPolygon()
         );
     }
 
