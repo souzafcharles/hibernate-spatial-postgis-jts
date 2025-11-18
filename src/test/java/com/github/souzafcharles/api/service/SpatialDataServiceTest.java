@@ -1334,7 +1334,4 @@ class SpatialDataServiceTest {
         assertThrows(IllegalArgumentException.class,
                 () -> spatialDataService.createFromSerializerFormat(request));
     }
-
-// REMOVER OS TESTES QUE FALHAM - Estes são os que tentam usar getPolygonAsGeoJson com outras geometrias
-
 }

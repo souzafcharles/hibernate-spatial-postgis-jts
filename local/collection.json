@@ -1,0 +1,344 @@
+{
+  "info": {
+    "name": "Spring Boot Spatial PostGIS API - Complete Brazilian Capitals Collection",
+    "description": "Complete collection for testing the spatial data API with polygons of Brazilian capitals including São Paulo, Rio de Janeiro, Brasília, Salvador, Fortaleza, Belo Horizonte, Manaus, Recife, Curitiba, Porto Alegre, Belém, and Goiânia",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "SETUP - Clear Database",
+      "item": [
+        {
+          "name": "Clear Database (Execute First)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/spatial-data",
+              "host": ["{{base_url}}"],
+              "path": ["api", "spatial-data"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "CREATE - Serializer Format - Capitais Brasileiras",
+      "item": [
+        {
+          "name": "São Paulo (5-point Polygon - Centro Expandido)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"point\": [-46.6333, -23.5505],\n  \"multipoint\": [\n    [-46.6333, -23.5505],\n    [-46.6400, -23.5600],\n    [-46.6500, -23.5400]\n  ],\n  \"linestring\": [\n    [-46.6333, -23.5505],\n    [-46.6400, -23.5600],\n    [-46.6500, -23.5400]\n  ],\n  \"multilinestring\": [\n    [\n      [-46.6333, -23.5505],\n      [-46.6400, -23.5600]\n    ],\n    [\n      [-46.6500, -23.5400],\n      [-46.6600, -23.5300]\n    ]\n  ],\n  \"polygon\": [\n    [\n      [-46.6600, -23.5700],\n      [-46.6600, -23.5300],\n      [-46.6000, -23.5300],\n      [-46.6000, -23.5700],\n      [-46.6600, -23.5700]\n    ]\n  ],\n  \"multipolygon\": [\n    [\n      [\n        [-46.6600, -23.5700],\n        [-46.6600, -23.5300],\n        [-46.6000, -23.5300],\n        [-46.6000, -23.5700],\n        [-46.6600, -23.5700]\n      ]\n    ]\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/spatial-data/serializer",
+              "host": ["{{base_url}}"],
+              "path": ["api", "spatial-data", "serializer"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Rio de Janeiro (7-point Polygon - Zona Sul)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"point\": [-43.1729, -22.9068],\n  \"multipoint\": [\n    [-43.1729, -22.9068],\n    [-43.1800, -22.9100],\n    [-43.1900, -22.9000],\n    [-43.2000, -22.8900]\n  ],\n  \"linestring\": [\n    [-43.1729, -22.9068],\n    [-43.2000, -22.9100],\n    [-43.2200, -22.8900],\n    [-43.2400, -22.8700]\n  ],\n  \"multilinestring\": [\n    [\n      [-43.1729, -22.9068],\n      [-43.1800, -22.9100]\n    ],\n    [\n      [-43.1900, -22.9000],\n      [-43.2000, -22.8900],\n      [-43.2100, -22.8800]\n    ]\n  ],\n  \"polygon\": [\n    [\n      [-43.2500, -22.9500],\n      [-43.2500, -22.8500],\n      [-43.1500, -22.8500],\n      [-43.1000, -22.8800],\n      [-43.1200, -22.9200],\n      [-43.1800, -22.9400],\n      [-43.2500, -22.9500]\n    ]\n  ],\n  \"multipolygon\": [\n    [\n      [\n        [-43.2500, -22.9500],\n        [-43.2500, -22.8500],\n        [-43.1500, -22.8500],\n        [-43.1000, -22.8800],\n        [-43.1200, -22.9200],\n        [-43.1800, -22.9400],\n        [-43.2500, -22.9500]\n      ]\n    ]\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/spatial-data/serializer",
+              "host": ["{{base_url}}"],
+              "path": ["api", "spatial-data", "serializer"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Brasília (9-point Polygon - Plano Piloto)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"point\": [-47.9292, -15.7801],\n  \"multipoint\": [\n    [-47.9292, -15.7801],\n    [-47.9300, -15.7810],\n    [-47.9310, -15.7790],\n    [-47.9320, -15.7820],\n    [-47.9330, -15.7780]\n  ],\n  \"linestring\": [\n    [-47.9292, -15.7801],\n    [-47.9350, -15.7850],\n    [-47.9400, -15.7750],\n    [-47.9450, -15.7700],\n    [-47.9500, -15.7800]\n  ],\n  \"multilinestring\": [\n    [\n      [-47.9292, -15.7801],\n      [-47.9300, -15.7810]\n    ],\n    [\n      [-47.9350, -15.7850],\n      [-47.9400, -15.7750],\n      [-47.9450, -15.7700]\n    ],\n    [\n      [-47.9500, -15.7800],\n      [-47.9550, -15.7900]\n    ]\n  ],\n  \"polygon\": [\n    [\n      [-48.0000, -15.8500],\n      [-48.0000, -15.7000],\n      [-47.9500, -15.6800],\n      [-47.9000, -15.6900],\n      [-47.8500, -15.7200],\n      [-47.8300, -15.7600],\n      [-47.8400, -15.8000],\n      [-47.9000, -15.8300],\n      [-48.0000, -15.8500]\n    ]\n  ],\n  \"multipolygon\": [\n    [\n      [\n        [-48.0000, -15.8500],\n        [-48.0000, -15.7000],\n        [-47.9500, -15.6800],\n        [-47.9000, -15.6900],\n        [-47.8500, -15.7200],\n        [-47.8300, -15.7600],\n        [-47.8400, -15.8000],\n        [-47.9000, -15.8300],\n        [-48.0000, -15.8500]\n      ]\n    ]\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/spatial-data/serializer",
+              "host": ["{{base_url}}"],
+              "path": ["api", "spatial-data", "serializer"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Salvador (6-point Polygon - Centro Histórico)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"point\": [-38.4813, -12.9714],\n  \"multipoint\": [\n    [-38.4813, -12.9714],\n    [-38.4900, -12.9800],\n    [-38.4700, -12.9600],\n    [-38.4800, -12.9500]\n  ],\n  \"linestring\": [\n    [-38.4813, -12.9714],\n    [-38.5000, -12.9900],\n    [-38.5200, -12.9500],\n    [-38.5100, -12.9300]\n  ],\n  \"polygon\": [\n    [\n      [-38.5500, -13.0200],\n      [-38.5500, -12.9200],\n      [-38.4000, -12.9200],\n      [-38.3800, -12.9700],\n      [-38.4200, -13.0100],\n      [-38.5500, -13.0200]\n    ]\n  ],\n  \"multipolygon\": [\n    [\n      [\n        [-38.5500, -13.0200],\n        [-38.5500, -12.9200],\n        [-38.4000, -12.9200],\n        [-38.3800, -12.9700],\n        [-38.4200, -13.0100],\n        [-38.5500, -13.0200]\n      ]\n    ]\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/spatial-data/serializer",
+              "host": ["{{base_url}}"],
+              "path": ["api", "spatial-data", "serializer"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Fortaleza (8-point Polygon - Praia de Iracema)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"point\": [-38.5267, -3.7319],\n  \"multipoint\": [\n    [-38.5267, -3.7319],\n    [-38.5300, -3.7350],\n    [-38.5400, -3.7400],\n    [-38.5200, -3.7200],\n    [-38.5100, -3.7100]\n  ],\n  \"linestring\": [\n    [-38.5267, -3.7319],\n    [-38.5500, -3.7500],\n    [-38.5700, -3.7100],\n    [-38.5900, -3.6900],\n    [-38.6000, -3.7000]\n  ],\n  \"polygon\": [\n    [\n      [-38.6000, -3.8000],\n      [-38.6000, -3.6500],\n      [-38.5000, -3.6500],\n      [-38.4500, -3.6800],\n      [-38.4300, -3.7100],\n      [-38.4400, -3.7500],\n      [-38.5300, -3.7900],\n      [-38.6000, -3.8000]\n    ]\n  ],\n  \"multipolygon\": [\n    [\n      [\n        [-38.6000, -3.8000],\n        [-38.6000, -3.6500],\n        [-38.5000, -3.6500],\n        [-38.4500, -3.6800],\n        [-38.4300, -3.7100],\n        [-38.4400, -3.7500],\n        [-38.5300, -3.7900],\n        [-38.6000, -3.8000]\n      ]\n    ]\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/spatial-data/serializer",
+              "host": ["{{base_url}}"],
+              "path": ["api", "spatial-data", "serializer"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Belo Horizonte (10-point Polygon - Região Central)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"point\": [-43.9378, -19.8157],\n  \"multipoint\": [\n    [-43.9378, -19.8157],\n    [-43.9400, -19.8200],\n    [-43.9350, -19.8100],\n    [-43.9300, -19.8250],\n    [-43.9450, -19.8050],\n    [-43.9500, -19.8300]\n  ],\n  \"linestring\": [\n    [-43.9378, -19.8157],\n    [-43.9500, -19.8300],\n    [-43.9700, -19.8000],\n    [-43.9900, -19.7800],\n    [-44.0100, -19.8200],\n    [-44.0000, -19.8400]\n  ],\n  \"polygon\": [\n    [\n      [-44.0000, -19.9000],\n      [-44.0000, -19.7500],\n      [-43.9000, -19.7200],\n      [-43.8500, -19.7300],\n      [-43.8000, -19.7700],\n      [-43.7800, -19.8200],\n      [-43.7900, -19.8700],\n      [-43.8300, -19.8900],\n      [-43.9000, -19.8800],\n      [-44.0000, -19.9000]\n    ]\n  ],\n  \"multipolygon\": [\n    [\n      [\n        [-44.0000, -19.9000],\n        [-44.0000, -19.7500],\n        [-43.9000, -19.7200],\n        [-43.8500, -19.7300],\n        [-43.8000, -19.7700],\n        [-43.7800, -19.8200],\n        [-43.7900, -19.8700],\n        [-43.8300, -19.8900],\n        [-43.9000, -19.8800],\n        [-44.0000, -19.9000]\n      ]\n    ]\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/spatial-data/serializer",
+              "host": ["{{base_url}}"],
+              "path": ["api", "spatial-data", "serializer"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Manaus (7-point Polygon - Centro)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"point\": [-60.0250, -3.1190],\n  \"multipoint\": [\n    [-60.0250, -3.1190],\n    [-60.0300, -3.1250],\n    [-60.0200, -3.1150],\n    [-60.0350, -3.1100]\n  ],\n  \"linestring\": [\n    [-60.0250, -3.1190],\n    [-60.0500, -3.1300],\n    [-60.0600, -3.1000],\n    [-60.0400, -3.0900]\n  ],\n  \"polygon\": [\n    [\n      [-60.1000, -3.1500],\n      [-60.1000, -3.0800],\n      [-59.9500, -3.0800],\n      [-59.9200, -3.1100],\n      [-59.9400, -3.1400],\n      [-60.0000, -3.1450],\n      [-60.1000, -3.1500]\n    ]\n  ],\n  \"multipolygon\": [\n    [\n      [\n        [-60.1000, -3.1500],\n        [-60.1000, -3.0800],\n        [-59.9500, -3.0800],\n        [-59.9200, -3.1100],\n        [-59.9400, -3.1400],\n        [-60.0000, -3.1450],\n        [-60.1000, -3.1500]\n      ]\n    ]\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/spatial-data/serializer",
+              "host": ["{{base_url}}"],
+              "path": ["api", "spatial-data", "serializer"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Recife (6-point Polygon - Centro Histórico)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"point\": [-34.8811, -8.0611],\n  \"multipoint\": [\n    [-34.8811, -8.0611],\n    [-34.8850, -8.0650],\n    [-34.8750, -8.0550],\n    [-34.8900, -8.0700]\n  ],\n  \"linestring\": [\n    [-34.8811, -8.0611],\n    [-34.9000, -8.0800],\n    [-34.9200, -8.0400],\n    [-34.9100, -8.0300]\n  ],\n  \"polygon\": [\n    [\n      [-34.9500, -8.1000],\n      [-34.9500, -8.0200],\n      [-34.8500, -8.0200],\n      [-34.8300, -8.0600],\n      [-34.8600, -8.0900],\n      [-34.9500, -8.1000]\n    ]\n  ],\n  \"multipolygon\": [\n    [\n      [\n        [-34.9500, -8.1000],\n        [-34.9500, -8.0200],\n        [-34.8500, -8.0200],\n        [-34.8300, -8.0600],\n        [-34.8600, -8.0900],\n        [-34.9500, -8.1000]\n      ]\n    ]\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/spatial-data/serializer",
+              "host": ["{{base_url}}"],
+              "path": ["api", "spatial-data", "serializer"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Curitiba (8-point Polygon - Centro)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"point\": [-49.2742, -25.4278],\n  \"multipoint\": [\n    [-49.2742, -25.4278],\n    [-49.2800, -25.4300],\n    [-49.2700, -25.4250],\n    [-49.2850, -25.4350],\n    [-49.2600, -25.4200]\n  ],\n  \"linestring\": [\n    [-49.2742, -25.4278],\n    [-49.3000, -25.4500],\n    [-49.3200, -25.4000],\n    [-49.3400, -25.3800],\n    [-49.3100, -25.3700]\n  ],\n  \"polygon\": [\n    [\n      [-49.4000, -25.5000],\n      [-49.4000, -25.3500],\n      [-49.2500, -25.3500],\n      [-49.2000, -25.3800],\n      [-49.2200, -25.4200],\n      [-49.2500, -25.4500],\n      [-49.3200, -25.4800],\n      [-49.4000, -25.5000]\n    ]\n  ],\n  \"multipolygon\": [\n    [\n      [\n        [-49.4000, -25.5000],\n        [-49.4000, -25.3500],\n        [-49.2500, -25.3500],\n        [-49.2000, -25.3800],\n        [-49.2200, -25.4200],\n        [-49.2500, -25.4500],\n        [-49.3200, -25.4800],\n        [-49.4000, -25.5000]\n      ]\n    ]\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/spatial-data/serializer",
+              "host": ["{{base_url}}"],
+              "path": ["api", "spatial-data", "serializer"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Porto Alegre (7-point Polygon - Centro)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"point\": [-51.2300, -30.0331],\n  \"multipoint\": [\n    [-51.2300, -30.0331],\n    [-51.2350, -30.0380],\n    [-51.2250, -30.0280],\n    [-51.2400, -30.0430]\n  ],\n  \"linestring\": [\n    [-51.2300, -30.0331],\n    [-51.2500, -30.0500],\n    [-51.2700, -30.0100],\n    [-51.2600, -30.0000]\n  ],\n  \"polygon\": [\n    [\n      [-51.3000, -30.1000],\n      [-51.3000, -29.9500],\n      [-51.1500, -29.9500],\n      [-51.1200, -29.9900],\n      [-51.1400, -30.0400],\n      [-51.2000, -30.0800],\n      [-51.3000, -30.1000]\n    ]\n  ],\n  \"multipolygon\": [\n    [\n      [\n        [-51.3000, -30.1000],\n        [-51.3000, -29.9500],\n        [-51.1500, -29.9500],\n        [-51.1200, -29.9900],\n        [-51.1400, -30.0400],\n        [-51.2000, -30.0800],\n        [-51.3000, -30.1000]\n      ]\n    ]\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/spatial-data/serializer",
+              "host": ["{{base_url}}"],
+              "path": ["api", "spatial-data", "serializer"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Belém (6-point Polygon - Cidade Velha)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"point\": [-48.5044, -1.4558],\n  \"multipoint\": [\n    [-48.5044, -1.4558],\n    [-48.5100, -1.4600],\n    [-48.5000, -1.4500],\n    [-48.5150, -1.4650]\n  ],\n  \"linestring\": [\n    [-48.5044, -1.4558],\n    [-48.5200, -1.4700],\n    [-48.5400, -1.4300],\n    [-48.5300, -1.4200]\n  ],\n  \"polygon\": [\n    [\n      [-48.6000, -1.5000],\n      [-48.6000, -1.4000],\n      [-48.4500, -1.4000],\n      [-48.4200, -1.4400],\n      [-48.4500, -1.4800],\n      [-48.6000, -1.5000]\n    ]\n  ],\n  \"multipolygon\": [\n    [\n      [\n        [-48.6000, -1.5000],\n        [-48.6000, -1.4000],\n        [-48.4500, -1.4000],\n        [-48.4200, -1.4400],\n        [-48.4500, -1.4800],\n        [-48.6000, -1.5000]\n      ]\n    ]\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/spatial-data/serializer",
+              "host": ["{{base_url}}"],
+              "path": ["api", "spatial-data", "serializer"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Goiânia (8-point Polygon - Setor Central)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"point\": [-49.2539, -16.6799],\n  \"multipoint\": [\n    [-49.2539, -16.6799],\n    [-49.2600, -16.6850],\n    [-49.2500, -16.6750],\n    [-49.2650, -16.6900],\n    [-49.2450, -16.6700]\n  ],\n  \"linestring\": [\n    [-49.2539, -16.6799],\n    [-49.2800, -16.7000],\n    [-49.3000, -16.6500],\n    [-49.3200, -16.6300],\n    [-49.2900, -16.6200]\n  ],\n  \"polygon\": [\n    [\n      [-49.4000, -16.7500],\n      [-49.4000, -16.6000],\n      [-49.2500, -16.6000],\n      [-49.2000, -16.6300],\n      [-49.2200, -16.6700],\n      [-49.2500, -16.7000],\n      [-49.3200, -16.7300],\n      [-49.4000, -16.7500]\n    ]\n  ],\n  \"multipolygon\": [\n    [\n      [\n        [-49.4000, -16.7500],\n        [-49.4000, -16.6000],\n        [-49.2500, -16.6000],\n        [-49.2000, -16.6300],\n        [-49.2200, -16.6700],\n        [-49.2500, -16.7000],\n        [-49.3200, -16.7300],\n        [-49.4000, -16.7500]\n      ]\n    ]\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/spatial-data/serializer",
+              "host": ["{{base_url}}"],
+              "path": ["api", "spatial-data", "serializer"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "CREATE - Deserializer Format - GeoJSON Capitais",
+      "item": [
+        {
+          "name": "São Paulo - GeoJSON (Centro Expandido)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"point\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-46.6333, -23.5505]\n  },\n  \"polygon\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-46.6600, -23.5700],\n      [-46.6600, -23.5300],\n      [-46.6000, -23.5300],\n      [-46.6000, -23.5700],\n      [-46.6600, -23.5700]\n    ]]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/spatial-data/deserializer",
+              "host": ["{{base_url}}"],
+              "path": ["api", "spatial-data", "deserializer"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Rio de Janeiro - GeoJSON (Zona Sul)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"point\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-43.1729, -22.9068]\n  },\n  \"polygon\": {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[\n      [-43.2500, -22.9500],\n      [-43.2500, -22.8500],\n      [-43.1500, -22.8500],\n      [-43.1000, -22.8800],\n      [-43.1200, -22.9200],\n      [-43.1800, -22.9400],\n      [-43.2500, -22.9500]\n    ]]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/spatial-data/deserializer",
+              "host": ["{{base_url}}"],
+              "path": ["api", "spatial-data", "deserializer"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Brasília - GeoJSON (Plano Piloto)",
+          "request
