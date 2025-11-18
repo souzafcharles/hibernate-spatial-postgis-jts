@@ -16,18 +16,21 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleEntityNotFound(EntityNotFoundException ex) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 ex.getMessage(),
-                LocalDateTime.now()
+                LocalDateTime.now().format(formatter)
         );
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
@@ -45,7 +48,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 Messages.VALIDATION_ERROR,
-                LocalDateTime.now()
+                LocalDateTime.now().format(formatter)
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
@@ -55,7 +58,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(),
-                LocalDateTime.now()
+                LocalDateTime.now().format(formatter)
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
@@ -65,7 +68,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 Messages.DATABASE_ERROR,
-                LocalDateTime.now()
+                LocalDateTime.now().format(formatter)
         );
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -74,8 +77,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.CONFLICT.value(),
-                "Data integrity violation",
-                LocalDateTime.now()
+                Messages.DATA_INTEGRITY_VIOLATION,
+                LocalDateTime.now().format(formatter)
         );
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
@@ -84,8 +87,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
-                "Invalid JSON format or structure",
-                LocalDateTime.now()
+                Messages.INVALID_JSON_FORMAT,
+                LocalDateTime.now().format(formatter)
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
@@ -94,9 +97,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
-                String.format("Invalid parameter type for '%s'. Expected: %s",
-                        ex.getName(), ex.getRequiredType().getSimpleName()),
-                LocalDateTime.now()
+                String.format(Messages.INVALID_PARAMETER_TYPE, ex.getName(), ex.getRequiredType().getSimpleName()),
+                LocalDateTime.now().format(formatter)
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
@@ -105,8 +107,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMissingParams(MissingServletRequestParameterException ex) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
-                String.format("Required parameter '%s' is missing", ex.getParameterName()),
-                LocalDateTime.now()
+                String.format(Messages.MISSING_REQUIRED_PARAMETER, ex.getParameterName()),
+                LocalDateTime.now().format(formatter)
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
@@ -116,7 +118,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(),
-                LocalDateTime.now()
+                LocalDateTime.now().format(formatter)
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
@@ -126,7 +128,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 ex.getMessage(),
-                LocalDateTime.now()
+                LocalDateTime.now().format(formatter)
         );
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -136,10 +138,10 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 Messages.INTERNAL_ERROR_OCCURRED,
-                LocalDateTime.now()
+                LocalDateTime.now().format(formatter)
         );
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    public record ErrorResponse(int status, String message, LocalDateTime timestamp) {}
+    public record ErrorResponse(int status, String message, String timestamp) {}
 }

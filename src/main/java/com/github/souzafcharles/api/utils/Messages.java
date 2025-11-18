@@ -20,6 +20,12 @@ public class Messages {
     public static final String LINESTRING_COORDINATES_INVALID = "LineString must have at least 2 coordinate pairs";
     public static final String POLYGON_COORDINATES_INVALID = "Polygon coordinates are invalid";
 
+    // Exception messages
+    public static final String DATA_INTEGRITY_VIOLATION = "Data integrity violation";
+    public static final String INVALID_JSON_FORMAT = "Invalid JSON format or structure";
+    public static final String INVALID_PARAMETER_TYPE = "Invalid parameter type for '%s'. Expected: %s";
+    public static final String MISSING_REQUIRED_PARAMETER = "Required parameter '%s' is missing";
+
     // OpenAPI General
     public static final String OPENAPI_TITLE = "Spring Boot Spatial PostGIS API";
     public static final String OPENAPI_DESCRIPTION = "API for handling spatial data with PostgreSQL and PostGIS";
