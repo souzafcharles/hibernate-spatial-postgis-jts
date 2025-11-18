@@ -30,14 +30,29 @@ public class SpatialDataService {
     // ------------------------------------------------------------
     public SpatialDataResponseDTO createFromSerializerFormat(SpatialDataSerializerRequestDTO request) {
         SpatialData spatialData = new SpatialData();
+        // Point
         if (hasValidPointCoordinates(request.point())) {
             spatialData.setPoint(createPoint(request.point()));
         }
+        // MultiPoint
+        if (hasValidMultiPointCoordinates(request.multipoint())) {
+            spatialData.setMultiPoint(createMultiPoint(request.multipoint()));
+        }
+        // LineString
+        if (hasValidLineStringCoordinates(request.linestring())) {
+            spatialData.setLineString(createLineString(request.linestring()));
+        }
+        // MultiLineString
+        if (hasValidMultiLineStringCoordinates(request.multilinestring())) {
+            spatialData.setMultiLineString(createMultiLineString(request.multilinestring()));
+        }
+        // Polygon
         if (hasValidPolygonCoordinates(request.polygon())) {
             spatialData.setPolygon(createPolygon(request.polygon()));
         }
-        if (hasValidLineStringCoordinates(request.linestring())) {
-            spatialData.setLineString(createLineString(request.linestring()));
+        // MultiPolygon
+        if (hasValidMultiPolygonCoordinates(request.multipolygon())) {
+            spatialData.setMultiPolygon(createMultiPolygon(request.multipolygon()));
         }
         SpatialData savedEntity = spatialDataRepository.save(spatialData);
         return toResponse(savedEntity);
@@ -51,12 +66,22 @@ public class SpatialDataService {
         if (request.point() != null) {
             spatialData.setPoint((Point) request.point());
         }
-        if (request.polygon() != null) {
-            spatialData.setPolygon((Polygon) request.polygon());
+        if (request.multipoint() != null) {
+            spatialData.setMultiPoint((MultiPoint) request.multipoint());
         }
         if (request.linestring() != null) {
             spatialData.setLineString((LineString) request.linestring());
         }
+        if (request.multilinestring() != null) {
+            spatialData.setMultiLineString((MultiLineString) request.multilinestring());
+        }
+        if (request.polygon() != null) {
+            spatialData.setPolygon((Polygon) request.polygon());
+        }
+        if (request.multipolygon() != null) {
+            spatialData.setMultiPolygon((MultiPolygon) request.multipolygon());
+        }
+
         SpatialData savedEntity = spatialDataRepository.save(spatialData);
         return toResponse(savedEntity);
     }
@@ -101,11 +126,23 @@ public class SpatialDataService {
         return coordinates != null && coordinates.size() >= 2;
     }
 
-    private boolean hasValidPolygonCoordinates(List<List<List<Double>>> coordinates) {
+    private boolean hasValidMultiPointCoordinates(List<List<Double>> coordinates) {
         return coordinates != null && !coordinates.isEmpty();
     }
 
     private boolean hasValidLineStringCoordinates(List<List<Double>> coordinates) {
+        return coordinates != null && !coordinates.isEmpty();
+    }
+
+    private boolean hasValidMultiLineStringCoordinates(List<List<List<Double>>> coordinates) {
+        return coordinates != null && !coordinates.isEmpty();
+    }
+
+    private boolean hasValidPolygonCoordinates(List<List<List<Double>>> coordinates) {
+        return coordinates != null && !coordinates.isEmpty();
+    }
+
+    private boolean hasValidMultiPolygonCoordinates(List<List<List<List<Double>>>> coordinates) {
         return coordinates != null && !coordinates.isEmpty();
     }
 
@@ -115,20 +152,13 @@ public class SpatialDataService {
         );
     }
 
-    private Polygon createPolygon(List<List<List<Double>>> polygonCoordinates) {
-        List<List<Double>> exteriorRing = polygonCoordinates.get(0);
-        if (exteriorRing.size() < 4) {
-            throw new IllegalArgumentException(Messages.INVALID_POLYGON_COORDINATES);
+    private MultiPoint createMultiPoint(List<List<Double>> multiPointCoordinates) {
+        Point[] points = new Point[multiPointCoordinates.size()];
+        for (int i = 0; i < multiPointCoordinates.size(); i++) {
+            List<Double> coord = multiPointCoordinates.get(i);
+            points[i] = geometryFactory.createPoint(new Coordinate(coord.get(0), coord.get(1)));
         }
-        Coordinate[] shellCoordinates = new Coordinate[exteriorRing.size()];
-        for (int i = 0; i < exteriorRing.size(); i++) {
-            shellCoordinates[i] = new Coordinate(
-                    exteriorRing.get(i).get(0),
-                    exteriorRing.get(i).get(1)
-            );
-        }
-        LinearRing shell = geometryFactory.createLinearRing(shellCoordinates);
-        return geometryFactory.createPolygon(shell);
+        return geometryFactory.createMultiPoint(points);
     }
 
     private LineString createLineString(List<List<Double>> lineCoordinates) {
@@ -137,6 +167,35 @@ public class SpatialDataService {
             coordinates[i] = new Coordinate(lineCoordinates.get(i).get(0), lineCoordinates.get(i).get(1));
         }
         return geometryFactory.createLineString(coordinates);
+    }
+
+    private MultiLineString createMultiLineString(List<List<List<Double>>> multiLineStringCoordinates) {
+        LineString[] lineStrings = new LineString[multiLineStringCoordinates.size()];
+        for (int i = 0; i < multiLineStringCoordinates.size(); i++) {
+            lineStrings[i] = createLineString(multiLineStringCoordinates.get(i));
+        }
+        return geometryFactory.createMultiLineString(lineStrings);
+    }
+
+    private Polygon createPolygon(List<List<List<Double>>> polygonCoordinates) {
+        List<List<Double>> exteriorRing = polygonCoordinates.get(0);
+        if (exteriorRing.size() < 4) {
+            throw new IllegalArgumentException(Messages.INVALID_POLYGON_COORDINATES);
+        }
+        Coordinate[] shellCoordinates = new Coordinate[exteriorRing.size()];
+        for (int i = 0; i < exteriorRing.size(); i++) {
+            shellCoordinates[i] = new Coordinate(exteriorRing.get(i).get(0), exteriorRing.get(i).get(1));
+        }
+        LinearRing shell = geometryFactory.createLinearRing(shellCoordinates);
+        return geometryFactory.createPolygon(shell);
+    }
+
+    private MultiPolygon createMultiPolygon(List<List<List<List<Double>>>> multiPolygonCoordinates) {
+        Polygon[] polygons = new Polygon[multiPolygonCoordinates.size()];
+        for (int i = 0; i < multiPolygonCoordinates.size(); i++) {
+            polygons[i] = createPolygon(multiPolygonCoordinates.get(i));
+        }
+        return geometryFactory.createMultiPolygon(polygons);
     }
 
     // ------------------------------------------------------------
@@ -151,6 +210,15 @@ public class SpatialDataService {
         }
         if (geometry instanceof LineString lineString) {
             return createGeoJsonLineString(lineString);
+        }
+        if (geometry instanceof MultiPoint multiPoint) {
+            return createGeoJsonMultiPoint(multiPoint);
+        }
+        if (geometry instanceof MultiLineString multiLineString) {
+            return createGeoJsonMultiLineString(multiLineString);
+        }
+        if (geometry instanceof MultiPolygon multiPolygon) {
+            return createGeoJsonMultiPolygon(multiPolygon);
         }
         return null;
     }
@@ -177,6 +245,44 @@ public class SpatialDataService {
             lineCoordinates[i][1] = coordinates[i].y;
         }
         return new GeoJsonGeometry("LineString", lineCoordinates);
+    }
+
+    private Object createGeoJsonMultiPoint(MultiPoint multiPoint) {
+        double[][] coordinates = new double[multiPoint.getNumGeometries()][2];
+        for (int i = 0; i < multiPoint.getNumGeometries(); i++) {
+            Point point = (Point) multiPoint.getGeometryN(i);
+            coordinates[i][0] = point.getX();
+            coordinates[i][1] = point.getY();
+        }
+        return new GeoJsonGeometry("MultiPoint", coordinates);
+    }
+
+    private Object createGeoJsonMultiLineString(MultiLineString multiLineString) {
+        double[][][] coordinates = new double[multiLineString.getNumGeometries()][][];
+        for (int i = 0; i < multiLineString.getNumGeometries(); i++) {
+            LineString lineString = (LineString) multiLineString.getGeometryN(i);
+            Coordinate[] lineCoords = lineString.getCoordinates();
+            coordinates[i] = new double[lineCoords.length][2];
+            for (int j = 0; j < lineCoords.length; j++) {
+                coordinates[i][j][0] = lineCoords[j].x;
+                coordinates[i][j][1] = lineCoords[j].y;
+            }
+        }
+        return new GeoJsonGeometry("MultiLineString", coordinates);
+    }
+
+    private Object createGeoJsonMultiPolygon(MultiPolygon multiPolygon) {
+        double[][][][] coordinates = new double[multiPolygon.getNumGeometries()][][][];
+        for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {
+            Polygon polygon = (Polygon) multiPolygon.getGeometryN(i);
+            Coordinate[] polyCoords = polygon.getExteriorRing().getCoordinates();
+            coordinates[i] = new double[1][polyCoords.length][2];
+            for (int j = 0; j < polyCoords.length; j++) {
+                coordinates[i][0][j][0] = polyCoords[j].x;
+                coordinates[i][0][j][1] = polyCoords[j].y;
+            }
+        }
+        return new GeoJsonGeometry("MultiPolygon", coordinates);
     }
 
     // ------------------------------------------------------------
