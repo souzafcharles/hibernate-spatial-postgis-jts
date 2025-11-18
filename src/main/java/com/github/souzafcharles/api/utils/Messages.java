@@ -19,4 +19,22 @@ public class Messages {
     public static final String POINT_COORDINATES_INVALID = "Point must have exactly 2 coordinates [longitude, latitude]";
     public static final String LINESTRING_COORDINATES_INVALID = "LineString must have at least 2 coordinate pairs";
     public static final String POLYGON_COORDINATES_INVALID = "Polygon coordinates are invalid";
+
+    // OpenAPI General
+    public static final String OPENAPI_TITLE = "Spring Boot Spatial PostGIS API";
+    public static final String OPENAPI_DESCRIPTION = "API for handling spatial data with PostgreSQL and PostGIS";
+
+    // Controller endpoints documentation
+    public static final String TAG_NAME = "Spatial Data";
+    public static final String TAG_DESCRIPTION = "API for managing spatial data with JTS geometries and GeoJSON";
+    public static final String CREATE_SERIALIZER_SUMMARY = "Create spatial data from coordinate lists";
+    public static final String CREATE_SERIALIZER_DESCRIPTION = "Accepts coordinate arrays and creates JTS geometries";
+    public static final String CREATE_DESERIALIZER_SUMMARY = "Create spatial data from GeoJSON geometries";
+    public static final String CREATE_DESERIALIZER_DESCRIPTION = "Accepts GeoJSON geometry objects and stores them as JTS geometries";
+    public static final String GET_ALL_SUMMARY = "Retrieve all spatial data";
+    public static final String GET_ALL_DESCRIPTION = "Returns all spatial data records with their JTS geometries";
+    public static final String GET_BY_ID_SUMMARY = "Get spatial data by ID";
+    public static final String GET_BY_ID_DESCRIPTION = "Returns a specific spatial data record by its ID";
+    public static final String GET_GEOJSON_SUMMARY = "Get polygon as GeoJSON";
+    public static final String GET_GEOJSON_DESCRIPTION = "Returns a specific polygon geometry in GeoJSON format";
 }
