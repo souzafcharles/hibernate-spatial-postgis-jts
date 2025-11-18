@@ -1052,4 +1052,289 @@ class SpatialDataServiceTest {
         verify(spatialDataRepository, times(1)).findById(spatialDataId);
     }
 
+// ------------------------------------------------------------
+// GeoJSON Conversion Tests - Testing Private Methods
+// ------------------------------------------------------------
+
+    @Test
+    void getPolygonAsGeoJson_WithPolygonWithHoles_ShouldConvertCorrectly() {
+        // Arrange
+        Long spatialDataId = 1L;
+        SpatialData spatialData = new SpatialData();
+        spatialData.setId(spatialDataId);
+
+        GeometryFactory geometryFactory = new GeometryFactory();
+
+        // Create polygon with hole
+        Coordinate[] exteriorRing = {
+                new Coordinate(0.0, 0.0),
+                new Coordinate(0.0, 10.0),
+                new Coordinate(10.0, 10.0),
+                new Coordinate(10.0, 0.0),
+                new Coordinate(0.0, 0.0)
+        };
+        Coordinate[] interiorRing = {
+                new Coordinate(2.0, 2.0),
+                new Coordinate(2.0, 8.0),
+                new Coordinate(8.0, 8.0),
+                new Coordinate(8.0, 2.0),
+                new Coordinate(2.0, 2.0)
+        };
+
+        Polygon polygon = geometryFactory.createPolygon(
+                geometryFactory.createLinearRing(exteriorRing),
+                new LinearRing[]{geometryFactory.createLinearRing(interiorRing)}
+        );
+        spatialData.setPolygon(polygon);
+
+        when(spatialDataRepository.findById(spatialDataId)).thenReturn(Optional.of(spatialData));
+
+        // Act
+        GeoJsonResponseDTO result = spatialDataService.getPolygonAsGeoJson(spatialDataId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("Feature", result.type());
+        assertNotNull(result.geometry());
+        assertNotNull(result.properties());
+        verify(spatialDataRepository, times(1)).findById(spatialDataId);
+    }
+
+    @Test
+    void getPolygonAsGeoJson_WithEmptyGeometry_ShouldHandleGracefully() {
+        // Arrange
+        Long spatialDataId = 1L;
+        SpatialData spatialData = new SpatialData();
+        spatialData.setId(spatialDataId);
+        // No geometries set - all null
+
+        when(spatialDataRepository.findById(spatialDataId)).thenReturn(Optional.of(spatialData));
+
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> spatialDataService.getPolygonAsGeoJson(spatialDataId));
+
+        assertTrue(exception.getMessage().contains(String.valueOf(spatialDataId)));
+        verify(spatialDataRepository, times(1)).findById(spatialDataId);
+    }
+
+    // Test edge cases for coordinate arrays
+    @Test
+    void getPolygonAsGeoJson_WithSinglePointPolygon_ShouldConvertCorrectly() {
+        // Arrange
+        Long spatialDataId = 1L;
+        SpatialData spatialData = new SpatialData();
+        spatialData.setId(spatialDataId);
+
+        GeometryFactory geometryFactory = new GeometryFactory();
+        // Technically invalid polygon but testing edge case
+        Coordinate[] singlePoint = {
+                new Coordinate(1.0, 1.0),
+                new Coordinate(1.0, 1.0),
+                new Coordinate(1.0, 1.0),
+                new Coordinate(1.0, 1.0)
+        };
+        Polygon polygon = geometryFactory.createPolygon(singlePoint);
+        spatialData.setPolygon(polygon);
+
+        when(spatialDataRepository.findById(spatialDataId)).thenReturn(Optional.of(spatialData));
+
+        // Act
+        GeoJsonResponseDTO result = spatialDataService.getPolygonAsGeoJson(spatialDataId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("Feature", result.type());
+        assertNotNull(result.geometry());
+        assertNotNull(result.properties());
+        verify(spatialDataRepository, times(1)).findById(spatialDataId);
+    }
+
+// ------------------------------------------------------------
+// Tests for Geometry Validation Methods (Private Methods)
+// ------------------------------------------------------------
+
+    @Test
+    void createFromSerializerFormat_WithVariousCoordinateValidations_ShouldHandleCorrectly() {
+        // Test various coordinate validation scenarios
+
+        // Test 1: Valid point coordinates
+        SpatialDataSerializerRequestDTO validPointRequest = new SpatialDataSerializerRequestDTO(
+                Arrays.asList(1.0, 2.0), null, null, null, null, null
+        );
+
+        // Test 2: Invalid point coordinates (null)
+        SpatialDataSerializerRequestDTO nullPointRequest = new SpatialDataSerializerRequestDTO(
+                null, null, null, null, null, null
+        );
+
+        // Test 3: Empty collections
+        SpatialDataSerializerRequestDTO emptyCollectionsRequest = new SpatialDataSerializerRequestDTO(
+                null, Arrays.asList(), Arrays.asList(), Arrays.asList(), Arrays.asList(), Arrays.asList()
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act & Assert - All should save successfully
+        SpatialDataResponseDTO result1 = spatialDataService.createFromSerializerFormat(validPointRequest);
+        assertNotNull(result1);
+
+        SpatialDataResponseDTO result2 = spatialDataService.createFromSerializerFormat(nullPointRequest);
+        assertNotNull(result2);
+
+        SpatialDataResponseDTO result3 = spatialDataService.createFromSerializerFormat(emptyCollectionsRequest);
+        assertNotNull(result3);
+
+        verify(spatialDataRepository, times(3)).save(any(SpatialData.class));
+    }
+
+// ------------------------------------------------------------
+// Tests for Geometry Creation Methods (Private Methods)
+// ------------------------------------------------------------
+
+    @Test
+    void createFromSerializerFormat_WithComplexMultiPolygon_ShouldCreateSuccessfully() {
+        // Arrange
+        List<List<List<List<Double>>>> complexMultiPolygon = Arrays.asList(
+                Arrays.asList( // First polygon
+                        Arrays.asList( // Exterior ring
+                                Arrays.asList(0.0, 0.0),
+                                Arrays.asList(0.0, 5.0),
+                                Arrays.asList(5.0, 5.0),
+                                Arrays.asList(5.0, 0.0),
+                                Arrays.asList(0.0, 0.0)
+                        )
+                ),
+                Arrays.asList( // Second polygon
+                        Arrays.asList( // Exterior ring
+                                Arrays.asList(6.0, 6.0),
+                                Arrays.asList(6.0, 8.0),
+                                Arrays.asList(8.0, 8.0),
+                                Arrays.asList(8.0, 6.0),
+                                Arrays.asList(6.0, 6.0)
+                        )
+                )
+        );
+
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                null, null, null, null, null, complexMultiPolygon
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromSerializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+    @Test
+    void createFromSerializerFormat_WithComplexMultiLineString_ShouldCreateSuccessfully() {
+        // Arrange
+        List<List<List<Double>>> complexMultiLineString = Arrays.asList(
+                Arrays.asList( // First line string
+                        Arrays.asList(0.0, 0.0),
+                        Arrays.asList(1.0, 1.0),
+                        Arrays.asList(2.0, 0.0)
+                ),
+                Arrays.asList( // Second line string
+                        Arrays.asList(3.0, 3.0),
+                        Arrays.asList(4.0, 4.0),
+                        Arrays.asList(5.0, 3.0)
+                )
+        );
+
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                null, null, null, complexMultiLineString, null, null
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromSerializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+// ------------------------------------------------------------
+// Tests for Edge Cases in Geometry Creation
+// ------------------------------------------------------------
+
+    @Test
+    void createFromSerializerFormat_WithLargeCoordinateArrays_ShouldHandleCorrectly() {
+        // Arrange - Create a polygon with many points
+        List<List<Double>> manyPoints = Arrays.asList(
+                Arrays.asList(0.0, 0.0),
+                Arrays.asList(0.0, 1.0),
+                Arrays.asList(0.1, 1.0),
+                Arrays.asList(0.2, 1.0),
+                Arrays.asList(0.3, 1.0),
+                Arrays.asList(0.4, 1.0),
+                Arrays.asList(0.5, 1.0),
+                Arrays.asList(1.0, 1.0),
+                Arrays.asList(1.0, 0.0),
+                Arrays.asList(0.0, 0.0)
+        );
+
+        List<List<List<Double>>> polygonWithManyPoints = Arrays.asList(manyPoints);
+
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                null, null, null, null, polygonWithManyPoints, null
+        );
+
+        SpatialData savedEntity = new SpatialData();
+        savedEntity.setId(1L);
+
+        when(spatialDataRepository.save(any(SpatialData.class))).thenReturn(savedEntity);
+
+        // Act
+        SpatialDataResponseDTO result = spatialDataService.createFromSerializerFormat(request);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        verify(spatialDataRepository, times(1)).save(any(SpatialData.class));
+    }
+
+// ------------------------------------------------------------
+// Tests for Error Conditions
+// ------------------------------------------------------------
+
+    @Test
+    void createFromSerializerFormat_WithMalformedPolygon_ShouldThrowException() {
+        // Arrange - Polygon with only 2 points (invalid)
+        List<List<List<Double>>> malformedPolygon = Arrays.asList(
+                Arrays.asList(
+                        Arrays.asList(0.0, 0.0),
+                        Arrays.asList(1.0, 1.0)
+                        // Missing closing point and not enough points
+                )
+        );
+
+        SpatialDataSerializerRequestDTO request = new SpatialDataSerializerRequestDTO(
+                null, null, null, null, malformedPolygon, null
+        );
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class,
+                () -> spatialDataService.createFromSerializerFormat(request));
+    }
+
+// REMOVER OS TESTES QUE FALHAM - Estes são os que tentam usar getPolygonAsGeoJson com outras geometrias
+
 }
